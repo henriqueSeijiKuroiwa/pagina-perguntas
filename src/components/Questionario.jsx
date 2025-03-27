@@ -1,5 +1,6 @@
 import { useState } from "react";
 import questions from "./questions";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 function Questionario(props) {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -7,10 +8,11 @@ function Questionario(props) {
   const [openIndexes, setOpenIndexes] = useState([]);
 
   const toggleAccordion = (index) => {
-    setOpenIndexes((prevIndexes) =>
-      prevIndexes.includes(index)
-        ? prevIndexes.filter((i) => i !== index) // Fecha se já estiver aberto
-        : [...prevIndexes, index] // Abre um novo item sem fechar os outros
+    setOpenIndexes(
+      (prevIndexes) =>
+        prevIndexes.includes(index)
+          ? prevIndexes.filter((i) => i !== index) // Fecha se já estiver aberto
+          : [...prevIndexes, index] // Abre um novo item sem fechar os outros
     );
   };
 
@@ -24,9 +26,7 @@ function Questionario(props) {
 
   return (
     <div className="p-4 w-[800px] mx-auto bg-white shadow-lg rounded-lg space-y-4">
-      <p className="text-slate-400">
-        (Pontos: 3 pts)
-      </p>
+      <p className="text-slate-400">(Pontos: 3 pts)</p>
       <h2 className="text-xl font-bold mb-4">
         {props.number + 1 + ") " + questions[props.number].text}
       </h2>
@@ -43,7 +43,7 @@ function Questionario(props) {
               onChange={() => setSelectedOption(index)}
               className="mr-2"
             />
-            {option}
+            {String.fromCharCode(97+index)+") "+option}
           </label>
         ))}
       </div>
@@ -58,19 +58,32 @@ function Questionario(props) {
           <div key={index} className="">
             <button
               onClick={() => toggleAccordion(index)}
-              className="w-full block bg-blue-300 border rounded-md cursor-pointer hover:bg-blue-600 hover:text-white active:bg-blue-800 text-left p-2"
+              className="w-full flex justify-between bg-blue-300 border cursor-pointer hover:bg-blue-600 hover:text-white active:bg-blue-800 text-left p-2"
             >
-              {"Dica " +
-                (index + 1) +
-                " (-" +
-                (index + 1) +
-                " ponto" +
-                (index === 0 ? "" : "s") +
-                ")"}
+              <span>
+                {"Dica " +
+                  (index + 1) +
+                  " (-" +
+                  (index + 1) +
+                  " ponto" +
+                  (index === 0 ? "" : "s") +
+                  ")"}
+              </span>
+              {openIndexes.includes(index) ? (
+                <ChevronUp className="text-xl" />
+              ) : (
+                <ChevronDown className="text-xl" />
+              )}
             </button>
-            {openIndexes.includes(index) && (
-              <div className="p-3 bg-gray-100 text-black">{dica}</div>
-            )}
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                openIndexes.includes(index)
+                  ? "max-h-[500px] p-3 bg-blue-100"
+                  : "max-h-0 pl-3 bg-blue-100"
+              }`}
+            >
+              <div>{dica}</div>
+            </div>
           </div>
         ))}
       </div>
