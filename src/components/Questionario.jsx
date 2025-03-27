@@ -2,9 +2,7 @@ import { useState } from "react";
 import questions from "./questions";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-function Questionario(props) {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [feedback, setFeedback] = useState("");
+function Questionario({ number, selectedOption, setSelectedOption, feedback }) {
   const [openIndexes, setOpenIndexes] = useState([]);
 
   const toggleAccordion = (index) => {
@@ -16,29 +14,21 @@ function Questionario(props) {
     );
   };
 
-  const handleSubmit = () => {
-    if (selectedOption === questions[props.number].correctAnswer) {
-      setFeedback("✅ Resposta correta!");
-    } else {
-      setFeedback("❌ Resposta incorreta. Tente novamente.");
-    }
-  };
-
   return (
     <div className="p-4 w-[800px] mx-auto bg-white shadow-lg rounded-lg space-y-4">
       <p className="text-slate-400">(Pontos: 3 pts)</p>
       <h2 className="text-xl font-bold mb-4">
-        {props.number + 1 + ") " + questions[props.number].text}
+        {number + 1 + ") " + questions[number].text}
       </h2>
       <div className="flex flex-col space-y-4">
-        {questions[props.number].options.map((option, index) => (
+        {questions[number].options.map((option, index) => (
           <label
             key={index}
             className="block bg-blue-300 p-2 border rounded-md cursor-pointer hover:bg-blue-600 hover:text-white active:bg-blue-800"
           >
             <input
               type="radio"
-              name="quiz"
+              name={`quiz-${number}`}
               value={index}
               onChange={() => setSelectedOption(index)}
               className="mr-2"
@@ -47,14 +37,9 @@ function Questionario(props) {
           </label>
         ))}
       </div>
-      <button
-        onClick={handleSubmit}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600"
-      >
-        Enviar Resposta
-      </button>
+      {feedback && <p className="mt-3 text-lg">{feedback}</p>}
       <div className="flex flex-col">
-        {questions[props.number].dicas.map((dica, index) => (
+        {questions[number].dicas.map((dica, index) => (
           <div key={index} className="">
             <button
               onClick={() => toggleAccordion(index)}
@@ -87,7 +72,6 @@ function Questionario(props) {
           </div>
         ))}
       </div>
-      {feedback && <p className="mt-3 text-lg">{feedback}</p>}
     </div>
   );
 }
